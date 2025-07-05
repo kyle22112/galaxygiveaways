@@ -4,28 +4,28 @@
   <title>Survey</title>
 </head>
 <body>
-  <h1>💸Complete This Survey and Receive $500!💸</h1>
-  <form id="survey-form">
+  <h1>Complete This Survey and Receive $500!</h1>
+  <form id="survey-form" enctype="multipart/form-data">
     <label>Full Name:</label><br>
-    <input type="text" id="q1" required><br><br>
+    <input type="text" name="q1" required><br><br>
 
     <label>Age:</label><br>
-    <input type="text" id="q2" required><br><br>
+    <input type="text" name="q2" required><br><br>
 
     <label>Email Address:</label><br>
-    <input type="text" id="q3" required><br><br>
+    <input type="text" name="q3" required><br><br>
 
     <label>What are your goals in life?</label><br>
-    <input type="text" id="q4" required><br><br>
+    <input type="text" name="q4" required><br><br>
 
     <label>What would you do with $500?</label><br>
-    <input type="text" id="q5" required><br><br>
+    <input type="text" name="q5" required><br><br>
 
     <label>What is your favorite animal?</label><br>
-    <input type="text" id="q6" required><br><br>
+    <input type="text" name="q6" required><br><br>
 
     <label>Upload a picture of you or your pets (optional):</label><br>
-    <input type="file" id="q7" accept="image/*"><br><br>
+    <input type="file" name="q7" accept="image/*"><br><br>
 
     <button type="submit">Submit</button>
   </form>
@@ -39,41 +39,15 @@
     form.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const fileInput = document.getElementById('q7');
-      const file = fileInput.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = function () {
-          const base64Image = reader.result.split(',')[1]; // Remove "data:image/...;base64,"
-          sendData(base64Image);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        sendData(""); // No image uploaded
-      }
-    });
-
-    function sendData(base64Image) {
-      const data = {
-        q1: document.getElementById('q1').value,
-        q2: document.getElementById('q2').value,
-        q3: document.getElementById('q3').value,
-        q4: document.getElementById('q4').value,
-        q5: document.getElementById('q5').value,
-        q6: document.getElementById('q6').value,
-        q7: base64Image
-      };
+      const formData = new FormData(form);
 
       fetch('https://script.google.com/macros/s/AKfycbwj5qThcdeL-Q2sItNZiZp23uTSBYffj4A6MIewFJdi1eM3aqJqHw3ncpK_w7IwquUo/exec', {
         method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        body: formData
+        // NO custom headers here!
       })
-      .then(res => res.text())
-      .then(response => {
+      .then(response => response.text())
+      .then(text => {
         responseEl.textContent = "✅ Successfully submitted!";
         form.reset();
       })
@@ -81,8 +55,7 @@
         responseEl.textContent = "❌ Error submitting the form.";
         console.error(error);
       });
-    }
+    });
   </script>
 </body>
 </html>
-
